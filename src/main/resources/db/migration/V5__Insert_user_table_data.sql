@@ -1,0 +1,2 @@
+insert into user(id, username, password, email, pet_name, avatar, article_count, state, gmt_create, gmt_modified)
+values (1, 'lishuqi', 'e10adc3949ba59abbe56e057f20f883e', 'mark@163.com', 'markblog', '', 0, 1, 1602395859, 1602395859)

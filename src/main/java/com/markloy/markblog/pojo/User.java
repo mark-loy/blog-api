@@ -5,15 +5,15 @@ import lombok.Data;
 @Data
 public class User {
 
-    private int id;
+    private Integer id;
     private String username;
     private String password;
-    private String pet_name;
+    private String petName;
     private String avatar;
     private String email;
-    private int articleCount;
-    private int state;
-    private long gmtCreate;
-    private long gmtModified;
+    private Integer articleCount;
+    private Integer state;
+    private Long gmtCreate;
+    private Long gmtModified;
 
 }

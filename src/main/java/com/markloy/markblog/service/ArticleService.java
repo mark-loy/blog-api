@@ -1,10 +1,12 @@
 package com.markloy.markblog.service;
 
-import com.markloy.markblog.pojo.Article;
+import com.markloy.markblog.dto.ArticleDTO;
 
-import java.util.List;
+import java.util.Map;
 
 public interface ArticleService {
 
-    List<Article> findArticleByPage(int currentPage, int offset);
+    Map<String, Object> findArticleByPage(Integer currentPage, Integer offset, String search);
+
+    ArticleDTO findArticleById(Integer id);
 }

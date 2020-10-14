@@ -1,6 +1,6 @@
 create table tag
 (
-    id bigint auto_increment comment '主键自增',
+    id int auto_increment comment '主键自增',
     tag_name varchar(16) not null comment '标签名',
     article_count int default 0 null comment '文章数',
     gmt_create bigint null comment '创建时间',

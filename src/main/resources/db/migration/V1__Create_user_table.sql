@@ -1,7 +1,7 @@
 create table user
 (
 	id int auto_increment comment '自增主键',
-	username varchar(20) not null comment '用户名',
+	username varchar(16) not null comment '用户名',
 	password varchar(50) not null comment '密码',
 	email varchar(50) null comment '邮箱',
 	pet_name varchar(11) not null comment '昵称',

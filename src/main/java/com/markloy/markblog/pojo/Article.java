@@ -5,11 +5,12 @@ import lombok.Data;
 @Data
 public class Article {
 
-    private Long id;
+    private Integer id;
     private String title;
+    private String description;
     private String context;
-    private Long userId;
-    private Long categoryId;
+    private Integer userId;
+    private Integer categoryId;
     private String tagsId;
     private Integer viewCount;
     private Integer likeCount;

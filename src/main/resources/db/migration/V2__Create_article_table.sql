@@ -1,10 +1,11 @@
 create table article
 (
-    id bigint auto_increment comment '主键、自增',
+    id int auto_increment comment '主键、自增',
     title varchar(50) not null comment '文章标题',
+    description varchar(125) not null comment '文章描述',
     context text not null comment '文章内容',
-    user_id bigint not null comment '发表人id',
-    category_id bigint not null comment '分类id',
+    user_id int not null comment '发表人id',
+    category_id int not null comment '分类id',
     tags_id varchar(100) not null comment '多个标签id',
     view_count int default 0 null comment '浏览数',
     like_count int default 0 null comment '点赞数',

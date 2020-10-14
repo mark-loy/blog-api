@@ -5,12 +5,11 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-    private int id;
+    private Integer id;
     private String username;
     private String avatar;
     private String email;
     private String petName;
-    private int articleCount;
-    private int state;
-    private String token;
+    private Integer articleCount;
+    private Integer state;
 }
