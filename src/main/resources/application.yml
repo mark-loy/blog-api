@@ -8,6 +8,12 @@ spring:
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
+  #配置mapper.xml配置文件的位置
+  mapper-locations: classpath:mapper/*.xml
+  #配置别名包
+  type-aliases-package: com.markloy.markblog.pojo
 
 server:
   port: 8888
+#logging:
+#  level.com.markloy.markblog.mapper: debug

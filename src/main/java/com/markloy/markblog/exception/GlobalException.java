@@ -6,9 +6,32 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLException;
+import java.sql.SQLSyntaxErrorException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalException {
+
+    @ExceptionHandler(Exception.class)
+    public ResultDTO exceptionHandler(Exception ex) {
+        log.info("Exception异常------{}", ex.getMessage());
+        return ResultDTO.fail(ex.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResultDTO exceptionHandler(RuntimeException ex) {
+        log.info("运行时异常------{}", ex.getMessage());
+        return ResultDTO.fail(ex.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResultDTO exceptionHandler(SQLException ex) {
+        log.info("sql异常------{}", ex.getMessage());
+        String message = ex.getMessage();
+        return ResultDTO.fail(message);
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResultDTO exceptionHandler(MethodArgumentNotValidException ex) {
@@ -23,16 +46,7 @@ public class GlobalException {
         return ResultDTO.fail(ex.getMessage());
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResultDTO exceptionHandler(RuntimeException ex) {
-        log.info("运行时异常------{}", ex.getMessage());
-        return ResultDTO.fail(ex.getMessage());
-    }
 
-    @ExceptionHandler(Exception.class)
-    public ResultDTO exceptionHandler(Exception ex) {
-        log.info("Exception异常------{}", ex.getMessage());
-        return ResultDTO.fail(ex.getMessage());
-    }
+
 
 }
