@@ -1,53 +1,19 @@
-package com.markloy.markblog;
+package com.markloy.markblog.service.impl;
 
 import com.markloy.markblog.mapper.ArticleMapper;
 import com.markloy.markblog.pojo.Article;
 import com.markloy.markblog.pojo.ArticleExample;
-import org.junit.jupiter.api.Test;
+import com.markloy.markblog.service.TimeLineService;
+import com.markloy.markblog.util.DeepCopyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SpringBootTest
-class MarkblogApplicationTests {
-
-    @Test
-    void contextLoads() {
-
-        String title = "linux  spring   命令 4";
-        String replace = title.replace(" ", "|");
-        System.out.println(replace);
-        String[] split = replace.split("|");
-        System.out.println(Arrays.toString(split));
-
-        ArrayList<String> list = new ArrayList<>();
-        for (String s : split) {
-            if (list.isEmpty()) {
-                list.add(s);
-            } else {
-                int size = list.size();
-                if ( list.get( size - 1).equals("|")) {
-                    if (!"|".equals(s)) {
-                        list.add(s);
-                    }
-                } else {
-                    if (!"|".equals(s)) {
-                        list.add(s);
-                    } else {
-                        list.add("|");
-                    }
-                }
-            }
-        }
-        System.out.println(Arrays.toString(list.toArray()));
-        StringBuilder search = new StringBuilder();
-        for (String item : list) {
-            search.append(item);
-        }
-        System.out.println(search.toString());
-    }
+@Service
+public class TimeLineServiceImpl implements TimeLineService {
 
     @Autowired
     private ArticleMapper articleMapper;
@@ -56,8 +22,8 @@ class MarkblogApplicationTests {
      * 根据时间倒序获取文章信息，处理返回结果
      * @return
      */
-    @Test
-     void getTimeLineData() {
+    @Override
+    public Map<String, Object> getTimeLineData() throws IOException, ClassNotFoundException {
         //按照时间倒序查询文章信息
         ArticleExample articleExample = new ArticleExample();
         articleExample.setOrderByClause("gmt_create desc");
@@ -71,6 +37,7 @@ class MarkblogApplicationTests {
         for (int i = 0; i < articles.size(); i++) {
             Map<String, Object> yearMap = new HashMap<>();
             Map<String, Object> articleMap = new HashMap<>();
+            // 日期处理
             Date date = new Date(Long.parseLong(articles.get(i).getGmtCreate() + "000"));
             Calendar instance = Calendar.getInstance();
             instance.setTime(date);
@@ -80,24 +47,26 @@ class MarkblogApplicationTests {
             int month = instance.get(Calendar.MONTH) + 1;
             // 获取日
             int day = instance.get(Calendar.DATE);
-            System.out.println(currentYear+ "------" + month+ "-----" + day);
             if (year.get() == currentYear) {
                 articleMap.put("id", articles.get(i).getId());
                 articleMap.put("title", articles.get(i).getTitle());
+                articleMap.put("date", month + "-" + day);
                 // 将文章信息放入文章集集合中
                 articleList.add(articleMap);
                 //判断articles集合长度
-                if (articles.size() == i) {
+                if (articles.size() - 1 == i) {
                     // 将文章集合信息放入年份信息中
+                    yearMap.put("year", year.get());
                     yearMap.put("articles", articleList);
                     timeList.add(yearMap);
                 }
             } else {
-                if (year.get() == 0) { // 第一次遍历时，文章信息
+                if (year.get() == 0) { // 第一次遍历时的文章信息
                     year.set(currentYear);
                     yearMap.put("year", year.get());
                     articleMap.put("id", articles.get(i).getId());
                     articleMap.put("title", articles.get(i).getTitle());
+                    articleMap.put("date", month + "-" + day);
                     // 将文章信息放入文章集集合中
                     articleList.add(articleMap);
                     //判断articles集合长度
@@ -108,27 +77,33 @@ class MarkblogApplicationTests {
                     }
                 } else { // 不同年份文章
                     // 先添加上次的文章信息
-                    yearMap.put("articles", articleList);
+                    // 深拷贝articleList集合，相当于把每年的文章数据隔离
+                    List<Map<String, Object>> mapList = DeepCopyUtil.depCopy(articleList);
+                    yearMap.put("year", year.get());
+                    yearMap.put("articles", mapList);
                     timeList.add(yearMap);
                     // 在获取本次文章信息
                     year.set(currentYear);
-                    yearMap.put("year", year.get());
                     articleMap.put("id", articles.get(i).getId());
                     articleMap.put("title", articles.get(i).getTitle());
+                    articleMap.put("date", month + "-" + day);
                     //清空articleList
                     articleList.clear();
                     articleList.add(articleMap);
                     //判断articles集合长度
-                    if (articles.size() == i) {
-                        yearMap.put("articles", articleList);
-                        timeList.add(yearMap);
+                    if (articles.size() - 1 == i) {
+                        HashMap<String, Object> map = new HashMap<>();
+                        map.put("year", year.get());
+                        map.put("articles", articleList);
+                        timeList.add(map);
                     }
                 }
             }
         }
-
-
-
+        // 结果集封装
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", articles.size());
+        map.put("timeLine", timeList);
+        return map;
     }
-
 }

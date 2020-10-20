@@ -1,8 +1,10 @@
-insert into article(id, title,description, context, user_id, category_id, tags_id, view_count, like_count, gmt_create, gmt_modified)
-values (1, 'Linux的常用命令1', '奥里给。。。。', 'll; ls -l; ps -ef | grep java; cd; 111', 1, 1, '1', 0, 0, 1602395859, 1602395859),
-       (2, 'Linux的常用命令2', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 222', 1, 1, '1,2', 0, 0, 1602395859, 1602395859),
-       (3, 'Linux的常用命令3', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 333', 1, 1, '1,2,3', 0, 0, 1602395859, 1602395859),
-       (4, 'Linux的常用命令4', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 444', 1, 2, '1,2', 0, 0, 1602395859, 1602395859),
-       (5, 'Linux的常用命令5', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 555', 1, 2, '1,3', 0, 0, 1602395859, 1602395859),
-       (6, 'Linux的常用命令6', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 666', 1, 2, '2,3', 0, 0, 1602395859, 1602395859),
-       (7, 'Linux的常用命令7', '奥里给。。。。','ll; ls -l; ps -ef | grep java; cd; 777', 1, 2, '2,3', 0, 0, 1602395859, 1602395859);
+insert into article(id, title,description, show_img, context, user_id, category_id, tags_id, view_count, like_count, gmt_create, gmt_modified)
+values (1, 'Linux的常用命令1', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg', 'll; ls -l; ps -ef | grep java; cd; 111', 1, 1, '1', 0, 0, 1602395859, 1602395859),
+       (2, 'Linux的常用命令2', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 222', 1, 1, '1,2', 0, 0, 1602395859, 1602395859),
+       (3, 'Linux的常用命令3', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 333', 1, 1, '1,2,3', 0, 0, 1602395859, 1602395859),
+       (4, 'Linux的常用命令4', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 444', 1, 2, '1,2', 0, 0, 1602395859, 1602395859),
+       (5, 'Linux的常用命令5', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 555', 1, 2, '1,3', 0, 0, 1602395859, 1602395859),
+       (6, 'Linux的常用命令6', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 666', 1, 2, '2,3', 0, 0, 1602395859, 1602395859),
+       (7, 'springboot自动配置原理', '三大注解...','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','@springbootconfiguration;@enableautoconfiguration', 1, 2, '2,3', 0, 0, 1570595105, 1570595105),
+       (8, 'spring', '春天。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','噩梦开始', 1, 2, '2,3', 0, 0, 1460591112, 1460591112),
+       (9, 'java常用类', '常用类。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','日期类、字符串操作类', 1, 2, '2,3', 0, 0, 1510291112, 1510291112);

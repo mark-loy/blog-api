@@ -38,6 +38,5 @@ public class UserController {
         hashMap.put("token", token);
         return ResultDTO.success(hashMap);
     }
-
-
+    
 }

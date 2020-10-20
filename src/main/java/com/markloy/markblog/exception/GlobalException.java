@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.SQLSyntaxErrorException;
 
@@ -40,13 +41,17 @@ public class GlobalException {
         return ResultDTO.fail(objectError.getDefaultMessage());
     }
 
-    @ExceptionHandler(CustomizeException.class)
-    public ResultDTO exceptionHandler(CustomizeException ex) {
-        log.info("自定义异常------{}", ex.getMessage());
+    @ExceptionHandler(IOException.class)
+    public ResultDTO exceptionHandler(IOException ex) {
+        log.info("io异常------{}", ex.getMessage());
         return ResultDTO.fail(ex.getMessage());
     }
 
-
+    @ExceptionHandler(ClassNotFoundException.class)
+    public ResultDTO exceptionHandler(ClassNotFoundException ex) {
+        log.info("class未找到------{}", ex.getMessage());
+        return ResultDTO.fail(ex.getMessage());
+    }
 
 
 }

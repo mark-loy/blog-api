@@ -8,5 +8,5 @@ public interface ArticleService {
 
     Map<String, Object> findArticleByPage(Integer currentPage, Integer offset, String search, Integer categoryId, Integer tagId);
 
-    ArticleDTO findArticleById(Integer id);
+    Map<String, Object> findArticleDetail(Integer id);
 }

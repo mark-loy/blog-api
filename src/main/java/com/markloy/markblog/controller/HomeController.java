@@ -76,13 +76,27 @@ public class HomeController {
         //获取标签文章前十的标签
         List<Tag> tag = tagExtMapper.findByLimit(tagCount);
         //结果集统一封装
-        HashMap<String, Object> hashMap = new HashMap<>();
+        Map<String, Object> hashMap = new HashMap<>();
         hashMap.put("user", userDTO);
         hashMap.put("countCate", countCate);
         hashMap.put("countTag", countTag);
         hashMap.put("cate", cate);
         hashMap.put("tag", tag);
         return ResultDTO.success(hashMap);
+    }
+
+
+    /**
+     * 文章详细信息查询
+     * @param id
+     * @return
+     */
+    @GetMapping("/article/{id}")
+    public ResultDTO articleDetail(@PathVariable("id") Integer id) {
+
+        Map<String, Object> map = articleService.findArticleDetail(id);
+
+        return ResultDTO.success(map);
     }
 
 }

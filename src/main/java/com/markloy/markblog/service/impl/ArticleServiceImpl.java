@@ -149,16 +149,47 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
-     * 获取文章详情
-     *
+     * 根据id查询文章详情信息
      * @param id
      * @return
      */
     @Override
-    public ArticleDTO findArticleById(Integer id) {
-
-
-        return null;
+    public Map<String, Object> findArticleDetail(Integer id) {
+        // 文章信息
+        Article article = articleMapper.selectByPrimaryKey(id);
+        // 用户信息
+        User user = userMapper.selectByPrimaryKey(article.getUserId());
+        HashMap<String, Object> userMap = new HashMap<>();
+        userMap.put("id", user.getId());
+        userMap.put("pet_name", user.getPetName());
+        userMap.put("avatar", user.getAvatar());
+        // 分类信息
+        Category category = categoryMapper.selectByPrimaryKey(article.getCategoryId());
+        Map<String, Object> cateMap = new HashMap<>();
+        cateMap.put("id", category.getId());
+        cateMap.put("cate_name", category.getCategoryName());
+        // 标签信息
+        // 处理标签ids
+        String[] tagIds= article.getTagsId().split(",");
+        List<Integer> tagIdList = new ArrayList<>();
+        for (String tagIdStr : tagIds) {
+            tagIdList.add(Integer.parseInt(tagIdStr));
+        }
+        // 遍历标签结果集
+        List<Map<String, Object>> tagList = new ArrayList<>();
+        tagIdList.forEach(tagId -> {
+            Tag tag = tagMapper.selectByPrimaryKey(tagId);
+            Map<String, Object> tagMap = new HashMap<>();
+            tagMap.put("id", tag.getId());
+            tagMap.put("tag_name", tag.getTagName());
+            tagList.add(tagMap);
+        });
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("article", article);
+        resultMap.put("user", userMap);
+        resultMap.put("cate", cateMap);
+        resultMap.put("tags", tagList);
+        return resultMap;
     }
 
     /**
