@@ -5,7 +5,7 @@ create table article
     description varchar(125) not null comment '文章描述',
     show_img varchar(512) comment '展示图片',
     context text not null comment '文章内容',
-    user_id int not null comment '发表人id',
+    admin_id int not null comment '发表人id',
     category_id int not null comment '分类id',
     tags_id varchar(100) not null comment '多个标签id',
     view_count int default 0 null comment '浏览数',

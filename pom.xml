@@ -40,6 +40,12 @@
     </profiles>
 
     <dependencies>
+        <!-- OK HTTP -->
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>4.9.0</version>
+        </dependency>
         <!--实体校验-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

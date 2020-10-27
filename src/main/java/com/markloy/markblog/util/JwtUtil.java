@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.Map;
 
-@Component
 public class JwtUtil {
 
     //密钥

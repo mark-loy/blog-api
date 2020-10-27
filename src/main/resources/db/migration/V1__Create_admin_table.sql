@@ -1,4 +1,4 @@
-create table user
+create table admin
 (
 	id int auto_increment comment '自增主键',
 	username varchar(16) not null comment '用户名',
@@ -15,5 +15,5 @@ create table user
 );
 
 create unique index user_username_uindex
-	on user (username);
+	on admin (username);
 

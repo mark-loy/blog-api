@@ -1,4 +1,4 @@
-insert into article(id, title,description, show_img, context, user_id, category_id, tags_id, view_count, like_count, gmt_create, gmt_modified)
+insert into article(id, title,description, show_img, context, admin_id, category_id, tags_id, view_count, like_count, gmt_create, gmt_modified)
 values (1, 'Linux的常用命令1', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg', 'll; ls -l; ps -ef | grep java; cd; 111', 1, 1, '1', 0, 0, 1602395859, 1602395859),
        (2, 'Linux的常用命令2', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 222', 1, 1, '1,2', 0, 0, 1602395859, 1602395859),
        (3, 'Linux的常用命令3', '奥里给。。。。','https://img2.yuntouxiang.com/file/20190627/b8d865c6f0f95664ce6416a0a7d3602e.jpg','ll; ls -l; ps -ef | grep java; cd; 333', 1, 1, '1,2,3', 0, 0, 1602395859, 1602395859),

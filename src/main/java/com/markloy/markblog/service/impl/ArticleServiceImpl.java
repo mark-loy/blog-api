@@ -22,7 +22,7 @@ public class ArticleServiceImpl implements ArticleService {
     private ArticleMapper articleMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    private AdminMapper adminMapper;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -101,11 +101,11 @@ public class ArticleServiceImpl implements ArticleService {
 
         articleByPage.forEach(article -> {
             //获取当前文章发表用户信息
-            User user = userMapper.selectByPrimaryKey(article.getUserId());
+            Admin admin = adminMapper.selectByPrimaryKey(article.getAdminId());
             HashMap<String, Object> userMap = new HashMap<>();
-            userMap.put("id", user.getId());
-            userMap.put("petName", user.getPetName());
-            userMap.put("avatar", user.getAvatar());
+            userMap.put("id", admin.getId());
+            userMap.put("petName", admin.getPetName());
+            userMap.put("avatar", admin.getAvatar());
             //获取当前文章的分类信息
             Category category = categoryMapper.selectByPrimaryKey(article.getCategoryId());
             HashMap<String, Object> cateMap = new HashMap<>();
@@ -158,11 +158,11 @@ public class ArticleServiceImpl implements ArticleService {
         // 文章信息
         Article article = articleMapper.selectByPrimaryKey(id);
         // 用户信息
-        User user = userMapper.selectByPrimaryKey(article.getUserId());
+        Admin admin = adminMapper.selectByPrimaryKey(article.getAdminId());
         HashMap<String, Object> userMap = new HashMap<>();
-        userMap.put("id", user.getId());
-        userMap.put("pet_name", user.getPetName());
-        userMap.put("avatar", user.getAvatar());
+        userMap.put("id", admin.getId());
+        userMap.put("pet_name", admin.getPetName());
+        userMap.put("avatar", admin.getAvatar());
         // 分类信息
         Category category = categoryMapper.selectByPrimaryKey(article.getCategoryId());
         Map<String, Object> cateMap = new HashMap<>();

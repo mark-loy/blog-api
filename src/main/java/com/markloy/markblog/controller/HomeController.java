@@ -24,7 +24,7 @@ public class HomeController {
     private ArticleService articleService;
 
     @Autowired
-    private UserMapper userMapper;
+    private AdminMapper adminMapper;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -64,9 +64,9 @@ public class HomeController {
     public ResultDTO otherInfo(@RequestParam(value = "cateCount", defaultValue = "3") Integer cateCount,
                                @RequestParam(value = "tagCount", defaultValue = "10") Integer tagCount) {
         //获取用户信息（头像、昵称）
-        User user = userMapper.selectByPrimaryKey(1);
+        Admin admin = adminMapper.selectByPrimaryKey(1);
         UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        BeanUtils.copyProperties(admin, userDTO);
         //获取分类总数
         long countCate = categoryMapper.countByExample(new CategoryExample());
         //获取标签总数
@@ -84,7 +84,6 @@ public class HomeController {
         hashMap.put("tag", tag);
         return ResultDTO.success(hashMap);
     }
-
 
     /**
      * 文章详细信息查询

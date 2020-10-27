@@ -1,5 +1,6 @@
 package com.markloy.markblog.controller;
 
+import com.markloy.markblog.dto.GithubUserDTO;
 import com.markloy.markblog.dto.LoginDTO;
 import com.markloy.markblog.dto.ResultDTO;
 import com.markloy.markblog.dto.UserDTO;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class UserController {
@@ -20,12 +22,12 @@ public class UserController {
     private UserService userService;
 
     /**
-     * 用户登录接口
+     * 后台管理系统登录api
      * @param loginDTO
      * @return
      */
     @PostMapping("/login")
-    public ResultDTO login(@Validated @RequestBody LoginDTO loginDTO) {
+    public ResultDTO backLogin(@Validated @RequestBody LoginDTO loginDTO) {
         //检查用户，获取用户信息
         UserDTO userDTO = userService.userLogin(loginDTO);
         //生成token
@@ -38,5 +40,16 @@ public class UserController {
         hashMap.put("token", token);
         return ResultDTO.success(hashMap);
     }
-    
+
+    /**
+     * 保存GitHub登录的用户信息api
+     * @param githubUserDTO
+     * @return
+     */
+    @PostMapping("save_github_user")
+    public ResultDTO saveGithubUser(@Validated @RequestBody GithubUserDTO githubUserDTO) {
+        Map<String, Object> map =  userService.saveGithubUser(githubUserDTO);
+        return ResultDTO.success(map);
+    }
+
 }
