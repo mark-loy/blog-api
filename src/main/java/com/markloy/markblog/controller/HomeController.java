@@ -1,5 +1,6 @@
 package com.markloy.markblog.controller;
 
+import com.markloy.markblog.dto.ArticleLikeDTO;
 import com.markloy.markblog.dto.ResultDTO;
 import com.markloy.markblog.dto.UserDTO;
 import com.markloy.markblog.mapper.*;
@@ -7,6 +8,7 @@ import com.markloy.markblog.pojo.*;
 import com.markloy.markblog.service.ArticleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -87,7 +89,7 @@ public class HomeController {
 
     /**
      * 文章详细信息查询
-     * @param id
+     * @param id 文章id
      * @return
      */
     @GetMapping("/article/{id}")
@@ -95,6 +97,32 @@ public class HomeController {
 
         Map<String, Object> map = articleService.findArticleDetail(id);
 
+        return ResultDTO.success(map);
+    }
+
+
+    /**
+     * 文章点赞api
+     * @return
+     */
+    @PutMapping("/like/article")
+    public ResultDTO giveLike(@RequestBody @Validated ArticleLikeDTO articleLikeDTO) {
+
+        Map<String, Object> map = articleService.giveLike(articleLikeDTO);
+
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 查询当前访客，当前文章是否点赞
+     * @param visitorId
+     * @param articleId
+     * @return
+     */
+    @GetMapping("/like/article")
+    public ResultDTO findArticleLike(@RequestParam("visitorId") Integer visitorId,
+                                     @RequestParam("articleId") Integer articleId) {
+        Map<String, Object> map = articleService.findArticleLike(visitorId, articleId);
         return ResultDTO.success(map);
     }
 

@@ -12,4 +12,8 @@ public interface CategoryExtMapper {
 
     List<Category> findByLimit(Integer count);
 
+    int incrArticleCount(Integer id);
+
+    int decrArticleCount(Integer id);
+
 }

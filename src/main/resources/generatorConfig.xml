@@ -34,13 +34,18 @@
         <!--配置数据库表-->
 
         <table tableName="admin" domainObjectName="Admin"/>
-        <table tableName="article" domainObjectName="Article"/>
+        <table tableName="article" domainObjectName="Article">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
         <table tableName="category" domainObjectName="Category"/>
         <table tableName="tag" domainObjectName="Tag"/>
         <table tableName="message" domainObjectName="Message">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
         <table tableName="visitor" domainObjectName="Visitor">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="visitorlike" domainObjectName="VisitorLike">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
 

@@ -22,6 +22,17 @@ public class UserController {
     private UserService userService;
 
     /**
+     * 保存GitHub登录的用户信息api
+     * @param githubUserDTO
+     * @return
+     */
+    @PostMapping("save/github/user")
+    public ResultDTO saveGithubUser(@Validated @RequestBody GithubUserDTO githubUserDTO) {
+        Map<String, Object> map =  userService.saveGithubUser(githubUserDTO);
+        return ResultDTO.success(map);
+    }
+
+    /**
      * 后台管理系统登录api
      * @param loginDTO
      * @return
@@ -40,16 +51,4 @@ public class UserController {
         hashMap.put("token", token);
         return ResultDTO.success(hashMap);
     }
-
-    /**
-     * 保存GitHub登录的用户信息api
-     * @param githubUserDTO
-     * @return
-     */
-    @PostMapping("save_github_user")
-    public ResultDTO saveGithubUser(@Validated @RequestBody GithubUserDTO githubUserDTO) {
-        Map<String, Object> map =  userService.saveGithubUser(githubUserDTO);
-        return ResultDTO.success(map);
-    }
-
 }

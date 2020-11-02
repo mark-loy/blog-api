@@ -22,4 +22,18 @@ public interface ArticleExtMapper {
      */
     Integer countByPageOrSearch(ArticleSearchDTO searchDTO);
 
+    /**
+     * 增加文章点赞数
+     * @param id 文章id
+     * @return
+     */
+    Integer incrArticleLikeCount(Integer id);
+
+    /**
+     * 减少文章点赞数
+     * @param id 文章id
+     * @return
+     */
+    Integer decrArticleLikeCount(Integer id);
+
 }

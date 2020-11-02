@@ -17,12 +17,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * 添加拦截器
+     *
      * @param registry
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/backstage/**", "/save/message");
+                .addPathPatterns("/back/**", "/save/message", "/home/like/article");
     }
 
 }

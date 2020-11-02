@@ -38,7 +38,7 @@ public class TimeLineServiceImpl implements TimeLineService {
             Map<String, Object> yearMap = new HashMap<>();
             Map<String, Object> articleMap = new HashMap<>();
             // 日期处理
-            Date date = new Date(Long.parseLong(articles.get(i).getGmtCreate() + "000"));
+            Date date = new Date(Long.parseLong(articles.get(i).getGmtCreate() + ""));
             Calendar instance = Calendar.getInstance();
             instance.setTime(date);
             // 获取年份

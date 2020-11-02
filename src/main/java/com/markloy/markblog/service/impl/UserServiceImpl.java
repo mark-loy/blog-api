@@ -5,12 +5,10 @@ import com.markloy.markblog.dto.LoginDTO;
 import com.markloy.markblog.dto.UserDTO;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
+import com.markloy.markblog.mapper.AdminMapper;
 import com.markloy.markblog.mapper.UserMapper;
 import com.markloy.markblog.mapper.VisitorMapper;
-import com.markloy.markblog.pojo.User;
-import com.markloy.markblog.pojo.UserExample;
-import com.markloy.markblog.pojo.Visitor;
-import com.markloy.markblog.pojo.VisitorExample;
+import com.markloy.markblog.pojo.*;
 import com.markloy.markblog.service.UserService;
 import com.markloy.markblog.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +28,7 @@ import java.util.Map;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private UserMapper userMapper;
+    private AdminMapper adminMapper;
 
     @Autowired
     private VisitorMapper visitorMapper;
@@ -43,21 +41,21 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public UserDTO userLogin(LoginDTO loginDTO) {
-        UserExample userExample = new UserExample();
-        userExample.createCriteria().andUsernameEqualTo(loginDTO.getUsername());
-        List<User> userList = userMapper.selectByExample(userExample);
+        AdminExample adminExample = new AdminExample();
+        adminExample.createCriteria().andUsernameEqualTo(loginDTO.getUsername());
+        List<Admin> adminList = adminMapper.selectByExample(adminExample);
         //判断用户是否存在
-        if (userList == null)
+        if (adminList.size() == 0)
             throw new CustomizeException(CustomizeErrorCode.USER_NOT_FOUND);
         //对密码进行md5加密
         String passwordEncode = DigestUtils.md5DigestAsHex(loginDTO.getPassword().getBytes());
         //获取查询到的用户
-        User user = userList.get(0);
+        Admin admin = adminList.get(0);
         //判断密码是否正确
-        if (!user.getPassword().equals(passwordEncode))
+        if (!admin.getPassword().equals(passwordEncode))
             throw new CustomizeException(CustomizeErrorCode.PASSWORD_ERROR);
         UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        BeanUtils.copyProperties(admin, userDTO);
         return userDTO;
     }
 

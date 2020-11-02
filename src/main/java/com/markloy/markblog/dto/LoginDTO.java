@@ -9,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 public class LoginDTO {
 
     @NotBlank(message = "用户不能为空")
-    @Length(min = 6, max = 16)
+    @Length(min = 5, max = 16)
     private String username;
 
     @NotBlank(message = "密码不能为空")

@@ -55,4 +55,12 @@
       </if>
     </where>
   </select>
+
+  <update id="incrArticleLikeCount" parameterType="java.lang.Integer">
+    update article set like_count = like_count + 1 where id = #{id}
+  </update>
+
+  <update id="decrArticleLikeCount" parameterType="java.lang.Integer">
+    update article set like_count = like_count - 1 where id = #{id}
+  </update>
 </mapper>

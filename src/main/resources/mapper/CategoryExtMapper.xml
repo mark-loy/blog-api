@@ -17,4 +17,13 @@
   <select id="findByLimit"  resultMap="BaseResultMap" parameterType="java.lang.Integer">
     select id, category_name,article_count from category order by article_count desc limit #{count}
   </select>
+
+  <update id="incrArticleCount" parameterType="java.lang.Integer">
+    update category set article_count = article_count + 1 where id = #{id}
+  </update>
+
+  <update id="decrArticleCount" parameterType="java.lang.Integer">
+    update category set article_count = article_count - 1 where id = #{id}
+  </update>
+
 </mapper>

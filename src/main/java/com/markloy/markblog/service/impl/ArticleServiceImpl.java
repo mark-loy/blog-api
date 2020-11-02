@@ -1,14 +1,15 @@
 package com.markloy.markblog.service.impl;
 
-import com.markloy.markblog.dto.ArticleDTO;
-import com.markloy.markblog.dto.ArticleSearchDTO;
+import com.markloy.markblog.dto.*;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
 import com.markloy.markblog.mapper.*;
 import com.markloy.markblog.pojo.*;
 import com.markloy.markblog.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +33,15 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private ArticleExtMapper articleExtMapper;
+
+    @Autowired
+    private CategoryExtMapper categoryExtMapper;
+
+    @Autowired
+    private TagExtMapper tagExtMapper;
+
+    @Autowired
+    private VisitorLikeMapper visitorLikeMapper;
 
     /**
      * 获取文章列表
@@ -135,8 +145,11 @@ public class ArticleServiceImpl implements ArticleService {
             articleMap.put("id", article.getId());
             articleMap.put("title", article.getTitle());
             articleMap.put("description", article.getDescription());
+            articleMap.put("context", article.getContext());
             articleMap.put("view_count", article.getViewCount());
+            articleMap.put("like_count", article.getLikeCount());
             articleMap.put("gmt_create", article.getGmtCreate());
+            articleMap.put("gmt_modified", article.getGmtModified());
             //结果集统一封装
             HashMap<String, Object> articleInfo = new HashMap<>();
             articleInfo.put("user", userMap);
@@ -193,13 +206,259 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     /**
+     * 添加文章
+     * @param articleDTO
+     * @return
+     */
+    @Transactional
+    @Override
+    public Map<String, Object> addArticle(AddArticleDTO articleDTO) {
+        // 验证文章的关联数据是否存在
+        verifyArticle(articleDTO.getUserId(), articleDTO.getCategoryId(), articleDTO.getTags());
+
+        // 验证通过，设置需要插入数据的字段
+        Article record = new Article();
+        // 设置标题
+        record.setTitle(articleDTO.getTitle());
+        // 设置描述信息
+        record.setDescription(articleDTO.getDescription());
+        // 设置展示图url
+        record.setShowImg(articleDTO.getShowImg());
+        // 设置发表人
+        record.setAdminId(articleDTO.getUserId());
+        // 设置分类
+        record.setCategoryId(articleDTO.getCategoryId());
+        // 设置标签
+        record.setTagsId(articleDTO.getTags());
+        // 设置内容
+        record.setContext(articleDTO.getContext());
+        // 设置发表时间
+        record.setGmtCreate(System.currentTimeMillis());
+        // 设置修改时间
+        record.setGmtModified(record.getGmtCreate());
+        // 执行sql
+        int isSuccess = articleMapper.insertSelective(record);
+        if (isSuccess != 1) {
+            throw new CustomizeException(CustomizeErrorCode.ADD_ARTICLE_ERROR);
+        }
+
+        // 增加当前分类的文章数量
+        int isIncrCateCount = categoryExtMapper.incrArticleCount(articleDTO.getCategoryId());
+        if (isIncrCateCount != 1) {
+            throw new CustomizeException(CustomizeErrorCode.ADD_ARTICLE_ERROR);
+        }
+
+        // 增加当前标签的文章数量
+        String[] tagArray = articleDTO.getTags().split(",");
+        for (String tagId : tagArray) {
+            int isIncrTagCount = tagExtMapper.incrArticleCount(Integer.parseInt(tagId));
+            if (isIncrTagCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.ADD_ARTICLE_ERROR);
+            }
+        }
+
+        // 添加成功，返回结果
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("article", record);
+        return resultMap;
+    }
+
+    /**
+     * 修改文章
+     * @param articleDTO
+     * @return
+     */
+    @Transactional
+    @Override
+    public Map<String, Object> updateArticle(UpdateArticleDTO articleDTO) {
+        // 修改文章数据前，先验证，该文章是否存在
+        Article article = articleMapper.selectByPrimaryKey(articleDTO.getId());
+        if (article == null) {
+            throw new CustomizeException(CustomizeErrorCode.ARTICLE_NOT_FOUND);
+        }
+        // 验证需要修改的关联数据
+        verifyArticle(null, articleDTO.getCategoryId(), articleDTO.getTags());
+
+        // 验证通过，设置修改字段
+        Article record = new Article();
+        // 设置主键
+        record.setId(articleDTO.getId());
+        // 设置标题
+        record.setTitle(articleDTO.getTitle());
+        // 设置描述
+        record.setDescription(articleDTO.getDescription());
+        // 设置内容
+        record.setContext(articleDTO.getContext());
+        // 设置展示图
+        record.setShowImg(articleDTO.getShowImg());
+        // 设置分类
+        record.setCategoryId(articleDTO.getCategoryId());
+        // 设置标签
+        record.setTagsId(articleDTO.getTags());
+        // 设置修改时间
+        record.setGmtModified(System.currentTimeMillis());
+        int isSuccess = articleMapper.updateByPrimaryKeySelective(record);
+        if (isSuccess != 1) {
+            throw new CustomizeException(CustomizeErrorCode.UPDATE_ARTICLE_ERROR);
+        }
+
+        // 判断分类的是否发生修改
+        if (!article.getCategoryId().equals(articleDTO.getCategoryId())) {
+            // 原有分类的文章数量减一
+            int decrArticleCount = categoryExtMapper.decrArticleCount(article.getCategoryId());
+            if (decrArticleCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.UPDATE_ARTICLE_ERROR);
+            }
+            // 修改后分类的文章数量加一
+            int incrArticleCount = categoryExtMapper.incrArticleCount(articleDTO.getCategoryId());
+            if (incrArticleCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.UPDATE_ARTICLE_ERROR);
+            }
+        }
+
+        // 原有标签的文章数量减一
+        String[] oldTagsArray = article.getTagsId().split(",");
+        for (String tagId : oldTagsArray) {
+            int decrArticleCount = tagExtMapper.decrArticleCount(Integer.parseInt(tagId));
+            if (decrArticleCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.UPDATE_ARTICLE_ERROR);
+            }
+        }
+
+        // 修改后的文章数量加一
+        String[] newTagsArray = articleDTO.getTags().split(",");
+        for (String tagId : newTagsArray) {
+            int incrArticleCount = tagExtMapper.incrArticleCount(Integer.parseInt(tagId));
+            if (incrArticleCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.UPDATE_ARTICLE_ERROR);
+            }
+        }
+
+        // 添加成功，返回结果
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("article", record);
+        return resultMap;
+    }
+
+    /**
+     * 根据id删除文章
+     * @param id
+     */
+    @Transactional
+    @Override
+    public void deleteArticle(Integer id) {
+        // 验证该文章是否存在
+        Article article = articleMapper.selectByPrimaryKey(id);
+        if (article == null) {
+            throw new CustomizeException(CustomizeErrorCode.ARTICLE_NOT_FOUND);
+        }
+        // 验证通过，删除文章
+        int isSuccess = articleMapper.deleteByPrimaryKey(id);
+        if (isSuccess != 1) {
+            throw new CustomizeException(CustomizeErrorCode.DELETE_ARTICLE_ERROR);
+        }
+
+        // 分类的文章数量减一
+        int decrArticleCount = categoryExtMapper.decrArticleCount(article.getCategoryId());
+        if (decrArticleCount != 1) {
+            throw new CustomizeException(CustomizeErrorCode.DELETE_ARTICLE_ERROR);
+        }
+
+        // 标签的文章数量减一
+        String[] tagArray = article.getTagsId().split(",");
+        for (String tagId : tagArray) {
+            int isDecrTagCount = tagExtMapper.decrArticleCount(Integer.parseInt(tagId));
+            if (isDecrTagCount != 1) {
+                throw new CustomizeException(CustomizeErrorCode.DELETE_ARTICLE_ERROR);
+            }
+        }
+
+    }
+
+    /**
+     * 查询当前访客对当前文章点赞
+     * @param visitorId 访客id
+     * @param articleId 文章id
+     * @return
+     */
+    @Override
+    public Map<String, Object> findArticleLike(Integer visitorId, Integer articleId) {
+        VisitorLikeExample visitorLikeExample = new VisitorLikeExample();
+        visitorLikeExample.createCriteria()
+                .andVisitorIdEqualTo(visitorId)
+                .andArticleIdEqualTo(articleId);
+        List<VisitorLike> visitorLikes = visitorLikeMapper.selectByExample(visitorLikeExample);
+        HashMap<String, Object> resultMap = new HashMap<>();
+        resultMap.put("isLike", visitorLikes.size());
+        return resultMap;
+    }
+
+    /**
+     * 文章点赞
+     * @param articleLikeDTO
+     * @return
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> giveLike(ArticleLikeDTO articleLikeDTO) {
+        // 查询点赞记录表中是否存在该用户已点赞情况
+        VisitorLikeExample visitorLikeExample = new VisitorLikeExample();
+        visitorLikeExample.createCriteria()
+                .andVisitorIdEqualTo(articleLikeDTO.getVisitorId())
+                .andArticleIdEqualTo(articleLikeDTO.getArticleId());
+        List<VisitorLike> visitorLikes = visitorLikeMapper.selectByExample(visitorLikeExample);
+        // 判断点赞类型
+        if (articleLikeDTO.getType().equals(1)) {
+            // 点赞
+            // 判断结果集长度
+            if (visitorLikes.size() == 0) {
+                // 说明当前访客该文章未点赞,执行点赞操作
+                // 增加文章表，当前文章的点赞数量
+                Integer isIncrCount = articleExtMapper.incrArticleLikeCount(articleLikeDTO.getArticleId());
+                if (isIncrCount != 1) {
+                    throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+                }
+                // 点赞访客记录表中，添加点赞记录
+                VisitorLike visitorLike = new VisitorLike();
+                visitorLike.setVisitorId(articleLikeDTO.getVisitorId());
+                visitorLike.setArticleId(articleLikeDTO.getArticleId());
+                visitorLike.setGmtCreate(System.currentTimeMillis());
+                int isInsert = visitorLikeMapper.insertSelective(visitorLike);
+                if (isInsert != 1) {
+                    throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+                }
+            } else {
+                throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+            }
+        } else {
+            // 取消点赞
+            // 判断结果集长度
+            if (visitorLikes.size() == 1) {
+                // 说明当前访客该文章已点赞，执行取消操作
+                Integer isDecrCount = articleExtMapper.decrArticleLikeCount(articleLikeDTO.getArticleId());
+                if (isDecrCount != 1) {
+                    throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+                }
+                // 点赞访客记录表中，删除点赞记录
+                int isDelete = visitorLikeMapper.deleteByPrimaryKey(visitorLikes.get(0).getId());
+                if (isDelete != 1) {
+                    throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+                }
+            } else {
+                throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+            }
+        }
+        return null;
+    }
+
+    /**
      * 格式化search
      * 格式为：linux|spring|java
      *
      * @param search
      * @return
      */
-    public String toSearch(String search) {
+    private String toSearch(String search) {
         //清除左右空格，将search内容所有空格替换为| 比如：Linux|||spring||java
         String replace = search.trim().replace(" ", "|");
         //将search中的每个字符拆分
@@ -229,5 +488,31 @@ public class ArticleServiceImpl implements ArticleService {
             searchTmp.append(item);
         }
         return searchTmp.toString();
+    }
+
+    /**
+     * 验证文章的关联数据是否合法
+     */
+    private void verifyArticle(@Nullable Integer adminId, Integer cateId, String tags) {
+        // 验证文章发表人是否存在
+        if (adminId != null) {
+            Admin admin = adminMapper.selectByPrimaryKey(adminId);
+            if (admin == null) {
+                throw new CustomizeException(CustomizeErrorCode.USER_NOT_FOUND);
+            }
+        }
+        // 验证分类是否存在
+        Category category = categoryMapper.selectByPrimaryKey(cateId);
+        if (category == null) {
+            throw new CustomizeException(CustomizeErrorCode.CATEGORY_NOT_FOUND);
+        }
+        // 验证标签
+        String[] tagArray = tags.split(",");
+        for (String tagId : tagArray) {
+            Tag tag = tagMapper.selectByPrimaryKey(Integer.parseInt(tagId));
+            if (tag == null) {
+                throw new CustomizeException(CustomizeErrorCode.TAG_NOT_FOUND);
+            }
+        }
     }
 }

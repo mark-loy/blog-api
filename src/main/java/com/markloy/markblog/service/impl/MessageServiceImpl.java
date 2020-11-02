@@ -46,7 +46,7 @@ public class MessageServiceImpl implements MessageService {
         // 获取插入留言的id
         Integer id = message.getId();
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("message_id", id);
+        resultMap.put("message", message);
         return resultMap;
     }
 
@@ -93,7 +93,7 @@ public class MessageServiceImpl implements MessageService {
         // 查询一级留言
         messageExample.createCriteria()
                 .andTypeEqualTo(1);
-        // 执行insert语句
+        // 执行select语句
         List<Message> messages = messageMapper.selectByExampleWithRowbounds(messageExample, new RowBounds(startIndex, offset));
 
         //二级留言集合存储
