@@ -2,6 +2,7 @@ package com.markloy.markblog.enums;
 
 public enum CustomizeErrorCode {
     USER_NOT_FOUND(400, "用户不存在"),
+    ACCOUNT_ERROR(400, "账号异常"),
     PASSWORD_ERROR(400, "密码错误"),
     PAGE_ERROR(400, "页码错误"),
     UPDATE_USER_ERROR(402, "更新访客信息失败"),
@@ -19,7 +20,9 @@ public enum CustomizeErrorCode {
     ADD_TAG_ERROR(401, "保存标签失败"),
     UPDATE_TAG_ERROR(402, "修改标签失败"),
     DELETE_TAG_ERROR(403, "删除标签失败"),
-    VISITOR_LIKE_ERROR(400, "访客点赞出现错误");
+    VISITOR_LIKE_ERROR(400, "访客点赞出现错误"),
+    VISITOR_NOT_FOUND(400, "访客不存在"),
+    INCR_VIEWCOUNT_ERROR(400, "增加浏览数失败");
 
     private final int code;
     private final String message;

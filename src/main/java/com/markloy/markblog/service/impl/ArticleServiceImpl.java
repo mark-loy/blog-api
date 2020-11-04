@@ -144,7 +144,6 @@ public class ArticleServiceImpl implements ArticleService {
             HashMap<String, Object> articleMap = new HashMap<>();
             articleMap.put("id", article.getId());
             articleMap.put("title", article.getTitle());
-            articleMap.put("description", article.getDescription());
             articleMap.put("context", article.getContext());
             articleMap.put("view_count", article.getViewCount());
             articleMap.put("like_count", article.getLikeCount());
@@ -167,9 +166,18 @@ public class ArticleServiceImpl implements ArticleService {
      * @return
      */
     @Override
+    @Transactional
     public Map<String, Object> findArticleDetail(Integer id) {
         // 文章信息
         Article article = articleMapper.selectByPrimaryKey(id);
+        if (article == null) {
+            throw new CustomizeException(CustomizeErrorCode.ARTICLE_NOT_FOUND);
+        }
+        // 增加当前文章浏览数
+        int isIncrView = articleExtMapper.incrArticleViewCount(id);
+        if (isIncrView != 1) {
+            throw new CustomizeException(CustomizeErrorCode.INCR_VIEWCOUNT_ERROR);
+        }
         // 用户信息
         Admin admin = adminMapper.selectByPrimaryKey(article.getAdminId());
         HashMap<String, Object> userMap = new HashMap<>();
@@ -220,8 +228,6 @@ public class ArticleServiceImpl implements ArticleService {
         Article record = new Article();
         // 设置标题
         record.setTitle(articleDTO.getTitle());
-        // 设置描述信息
-        record.setDescription(articleDTO.getDescription());
         // 设置展示图url
         record.setShowImg(articleDTO.getShowImg());
         // 设置发表人
@@ -285,8 +291,6 @@ public class ArticleServiceImpl implements ArticleService {
         record.setId(articleDTO.getId());
         // 设置标题
         record.setTitle(articleDTO.getTitle());
-        // 设置描述
-        record.setDescription(articleDTO.getDescription());
         // 设置内容
         record.setContext(articleDTO.getContext());
         // 设置展示图

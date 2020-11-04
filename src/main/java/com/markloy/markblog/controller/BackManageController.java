@@ -4,10 +4,12 @@ import com.markloy.markblog.dto.*;
 import com.markloy.markblog.service.ArticleService;
 import com.markloy.markblog.service.CategoryService;
 import com.markloy.markblog.service.TagService;
+import com.markloy.markblog.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -25,6 +27,9 @@ public class BackManageController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      * 查询文章列表api
@@ -176,6 +181,35 @@ public class BackManageController {
         tagService.deleteTag(id);
 
         return ResultDTO.success(null);
+    }
+
+    /**
+     * 查询所有的访客信息
+     * @return
+     */
+    @GetMapping("/visitor")
+    public ResultDTO findAllVisitor() {
+
+        Map<String, Object> map = userService.findAllVisitor();
+
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 修改访客账户的状态
+     * @param id 访客账户id
+     * @param state 访客账户状态
+     * @return
+     */
+    @PutMapping("/visitor/{id}")
+    public ResultDTO updateVisitorState(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "state") Boolean state
+    ) {
+
+        Map<String, Object> map = userService.updateVisitorState(id, state);
+
+        return ResultDTO.success(map);
     }
 
 

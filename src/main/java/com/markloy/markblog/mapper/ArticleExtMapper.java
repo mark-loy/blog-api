@@ -36,4 +36,11 @@ public interface ArticleExtMapper {
      */
     Integer decrArticleLikeCount(Integer id);
 
+    /**
+     * 增加文章浏览数
+     * @param id
+     * @return
+     */
+    int incrArticleViewCount(Integer id);
+
 }

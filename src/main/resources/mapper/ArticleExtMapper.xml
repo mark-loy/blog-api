@@ -63,4 +63,8 @@
   <update id="decrArticleLikeCount" parameterType="java.lang.Integer">
     update article set like_count = like_count - 1 where id = #{id}
   </update>
+
+  <update id="incrArticleViewCount" parameterType="java.lang.Integer">
+    update article set view_count = view_count + 1 where id = #{id}
+  </update>
 </mapper>
