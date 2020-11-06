@@ -1,15 +1,27 @@
 package com.markloy.markblog.controller;
 
 import com.markloy.markblog.dto.*;
+import com.markloy.markblog.enums.CustomizeErrorCode;
+import com.markloy.markblog.exception.CustomizeException;
+import com.markloy.markblog.provider.OSSProvider;
 import com.markloy.markblog.service.ArticleService;
 import com.markloy.markblog.service.CategoryService;
 import com.markloy.markblog.service.TagService;
 import com.markloy.markblog.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -17,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/back")
+@Slf4j
 public class BackManageController {
 
     @Autowired
@@ -33,13 +46,14 @@ public class BackManageController {
 
     /**
      * 查询文章列表api
+     *
      * @return
      */
     @GetMapping("/article")
-    public ResultDTO findArticleList(@RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
-                                     @RequestParam(value = "offset",defaultValue = "10") Integer offset,
-                                     @RequestParam(value = "cate_id",defaultValue = "") Integer cateId,
-                                     @RequestParam(value = "tag_id",defaultValue = "") Integer tagId,
+    public ResultDTO findArticleList(@RequestParam(value = "currentPage", defaultValue = "1") Integer currentPage,
+                                     @RequestParam(value = "offset", defaultValue = "10") Integer offset,
+                                     @RequestParam(value = "cate_id", defaultValue = "") Integer cateId,
+                                     @RequestParam(value = "tag_id", defaultValue = "") Integer tagId,
                                      @RequestParam(value = "search", defaultValue = "") String search) {
         //文章数据加载
         Map<String, Object> articleByPage = articleService.findArticleByPage(currentPage, offset, search, cateId, tagId);
@@ -48,6 +62,7 @@ public class BackManageController {
 
     /**
      * 添加文章api
+     *
      * @return
      */
     @PostMapping("/article")
@@ -58,6 +73,7 @@ public class BackManageController {
 
     /**
      * 修改文章api
+     *
      * @param articleDTO
      * @return
      */
@@ -71,6 +87,7 @@ public class BackManageController {
 
     /**
      * 删除文章api
+     *
      * @param id
      * @return
      */
@@ -84,6 +101,7 @@ public class BackManageController {
 
     /**
      * 查询所有分类api
+     *
      * @return
      */
     @GetMapping("/category")
@@ -96,6 +114,7 @@ public class BackManageController {
 
     /**
      * 添加分类api
+     *
      * @return
      */
     @PostMapping("/category")
@@ -108,6 +127,7 @@ public class BackManageController {
 
     /**
      * 修改分类api
+     *
      * @param updateCategoryDTO
      * @return
      */
@@ -121,6 +141,7 @@ public class BackManageController {
 
     /**
      * 根据id删除分类api
+     *
      * @param id
      * @return
      */
@@ -134,6 +155,7 @@ public class BackManageController {
 
     /**
      * 查询所有的标签api
+     *
      * @return
      */
     @GetMapping("/tags")
@@ -146,19 +168,21 @@ public class BackManageController {
 
     /**
      * 添加标签api
+     *
      * @param addTagDTO
      * @return
      */
     @PostMapping("/tags")
     public ResultDTO addTag(@RequestBody @Validated AddTagDTO addTagDTO) {
 
-        Map<String, Object> map =  tagService.addTag(addTagDTO);
+        Map<String, Object> map = tagService.addTag(addTagDTO);
 
         return ResultDTO.success(map);
     }
 
     /**
      * 修改标签api
+     *
      * @param updateTagDTO
      * @return
      */
@@ -172,6 +196,7 @@ public class BackManageController {
 
     /**
      * 根据id删除标签api
+     *
      * @param id
      * @return
      */
@@ -185,6 +210,7 @@ public class BackManageController {
 
     /**
      * 查询所有的访客信息
+     *
      * @return
      */
     @GetMapping("/visitor")
@@ -197,7 +223,8 @@ public class BackManageController {
 
     /**
      * 修改访客账户的状态
-     * @param id 访客账户id
+     *
+     * @param id    访客账户id
      * @param state 访客账户状态
      * @return
      */
@@ -212,5 +239,38 @@ public class BackManageController {
         return ResultDTO.success(map);
     }
 
+    @Autowired
+    private OSSProvider ossProvider;
+
+    /**
+     * 文件上传api
+     * @param request 请求
+     * @return
+     * @throws IOException io异常
+     */
+    @ResponseBody
+    @PostMapping("/file/upload")
+    public ResultDTO fileUpload(HttpServletRequest request) throws IOException {
+        //转化request对象为上传文件的request对象
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        // 获取文件
+        MultipartFile parameter = multipartRequest.getFile("file");
+        assert parameter != null;
+        Map<String, Object> map = ossProvider.fileUpload(parameter);
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 移除单个文件
+     * @param fileName 文件名
+     * @return
+     */
+    @DeleteMapping("/file/delete/{file_name}")
+    public ResultDTO fileDelete(@PathVariable("file_name") String fileName) {
+
+        ossProvider.fileDelete(fileName);
+
+        return ResultDTO.success(null);
+    }
 
 }

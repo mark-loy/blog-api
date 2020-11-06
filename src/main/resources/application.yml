@@ -2,6 +2,11 @@
 spring:
   profiles:
     active: dev
+  servlet:
+    # 上传文件大小设置
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 # 端口配置
 server:
   port: 8888
@@ -13,6 +18,15 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   #配置别名包
   type-aliases-package: com.markloy.markblog.pojo
+# OSS对象存储配置
+aliyun:
+  endpoint: https://oss-cn-beijing.aliyuncs.com
+  accessKeyId: LTAI4G1XwSwHugkm4fod6MDg
+  accessKeySecret: hHXmXP9tb4XRPzzQffqMa4tpTGUK3o
+  oss:
+    bucketName: marker-fileupload
+    filePatten: images/blog/
+    expiration: 31104000000
 
 
 

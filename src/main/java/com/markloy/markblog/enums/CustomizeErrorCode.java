@@ -22,7 +22,8 @@ public enum CustomizeErrorCode {
     DELETE_TAG_ERROR(403, "删除标签失败"),
     VISITOR_LIKE_ERROR(400, "访客点赞出现错误"),
     VISITOR_NOT_FOUND(400, "访客不存在"),
-    INCR_VIEWCOUNT_ERROR(400, "增加浏览数失败");
+    INCR_VIEWCOUNT_ERROR(400, "增加浏览数失败"),
+    FILE_UPLOAD_ERROR(400, "文件上传失败");
 
     private final int code;
     private final String message;
