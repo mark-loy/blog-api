@@ -4,10 +4,7 @@ import com.markloy.markblog.dto.*;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
 import com.markloy.markblog.provider.OSSProvider;
-import com.markloy.markblog.service.ArticleService;
-import com.markloy.markblog.service.CategoryService;
-import com.markloy.markblog.service.TagService;
-import com.markloy.markblog.service.UserService;
+import com.markloy.markblog.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -244,6 +241,7 @@ public class BackManageController {
 
     /**
      * 文件上传api
+     *
      * @param request 请求
      * @return
      * @throws IOException io异常
@@ -261,7 +259,8 @@ public class BackManageController {
     }
 
     /**
-     * 移除单个文件
+     * 移除单个文件api
+     *
      * @param fileName 文件名
      * @return
      */
@@ -272,5 +271,67 @@ public class BackManageController {
 
         return ResultDTO.success(null);
     }
+
+    /**
+     * 查询管理员api
+     *
+     * @return
+     */
+    @GetMapping("/admin")
+    public ResultDTO findAllAdmin() {
+
+        Map<String, Object> map = userService.findAllAdmin();
+
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 根据id修改管理员信息api
+     *
+     * @param updateAdminDTO 修改实体DTO
+     * @return
+     */
+    @PutMapping("/admin")
+    public ResultDTO updateAdmin(@RequestBody @Validated UpdateAdminDTO updateAdminDTO) {
+
+        Map<String, Object> map = userService.updateAdmin(updateAdminDTO);
+
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 修改访客账户的状态
+     *
+     * @param id    访客账户id
+     * @param state 访客账户状态
+     * @return
+     */
+    @PutMapping("/admin/{id}")
+    public ResultDTO updateAdminState(
+            @PathVariable("id") Integer id,
+            @RequestParam(value = "state") Boolean state
+    ) {
+
+        Map<String, Object> map = userService.updateAdminState(id, state);
+
+        return ResultDTO.success(map);
+    }
+
+    @Autowired
+    private InformService informService;
+
+    /**
+     * 查询未读通知api
+     * @return
+     */
+    @GetMapping("/inform")
+    public ResultDTO findInformByState() {
+
+        Map<String, Object> map = informService.findInformByState();
+
+        return  ResultDTO.success(map);
+    }
+
+
 
 }

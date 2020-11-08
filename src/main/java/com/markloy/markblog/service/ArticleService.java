@@ -1,7 +1,6 @@
 package com.markloy.markblog.service;
 
 import com.markloy.markblog.dto.AddArticleDTO;
-import com.markloy.markblog.dto.ArticleDTO;
 import com.markloy.markblog.dto.ArticleLikeDTO;
 import com.markloy.markblog.dto.UpdateArticleDTO;
 
@@ -11,7 +10,7 @@ public interface ArticleService {
 
     Map<String, Object> findArticleByPage(Integer currentPage, Integer offset, String search, Integer categoryId, Integer tagId);
 
-    Map<String, Object> findArticleDetail(Integer id);
+    Map<String, Object> findArticleDetail(Integer id, Integer informId);
 
     Map<String, Object> addArticle(AddArticleDTO articleDTO);
 

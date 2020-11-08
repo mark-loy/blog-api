@@ -2,6 +2,7 @@ package com.markloy.markblog.service;
 
 import com.markloy.markblog.dto.GithubUserDTO;
 import com.markloy.markblog.dto.LoginDTO;
+import com.markloy.markblog.dto.UpdateAdminDTO;
 import com.markloy.markblog.dto.UserDTO;
 
 import java.io.IOException;
@@ -16,4 +17,10 @@ public interface UserService {
     Map<String, Object> findAllVisitor();
 
     Map<String, Object> updateVisitorState(Integer id, Boolean state);
+
+    Map<String, Object> findAllAdmin();
+
+    Map<String, Object> updateAdmin(UpdateAdminDTO updateAdminDTO);
+
+    Map<String, Object> updateAdminState(Integer id, Boolean state);
 }

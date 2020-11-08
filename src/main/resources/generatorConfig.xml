@@ -48,6 +48,8 @@
         <table tableName="visitorlike" domainObjectName="VisitorLike">
             <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
         </table>
-
+        <table tableName="inform" domainObjectName="Inform">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>

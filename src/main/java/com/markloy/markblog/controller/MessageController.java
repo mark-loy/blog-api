@@ -36,9 +36,10 @@ public class MessageController {
      */
     @GetMapping("/find/message")
     public ResultDTO getMessage(@RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
-                                @RequestParam(value = "offset",defaultValue = "5") Integer offset) {
+                                @RequestParam(value = "offset",defaultValue = "5") Integer offset,
+                                @RequestParam(value = "informId",defaultValue = "0") Integer informId) {
         // 查询留言信息
-        List<Map<String, Object>> maps = messageService.findAllMessage(currentPage, offset);
+        List<Map<String, Object>> maps = messageService.findAllMessage(currentPage, offset, informId);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("messages", maps);
         // 查询留言总数

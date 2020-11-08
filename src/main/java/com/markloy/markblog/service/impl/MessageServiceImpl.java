@@ -2,9 +2,12 @@ package com.markloy.markblog.service.impl;
 
 import com.markloy.markblog.dto.MessageDTO;
 import com.markloy.markblog.enums.CustomizeErrorCode;
+import com.markloy.markblog.enums.InformType;
 import com.markloy.markblog.exception.CustomizeException;
+import com.markloy.markblog.mapper.InformMapper;
 import com.markloy.markblog.mapper.MessageMapper;
 import com.markloy.markblog.mapper.VisitorMapper;
+import com.markloy.markblog.pojo.Inform;
 import com.markloy.markblog.pojo.Message;
 import com.markloy.markblog.pojo.MessageExample;
 import com.markloy.markblog.pojo.Visitor;
@@ -13,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,39 +30,70 @@ public class MessageServiceImpl implements MessageService {
     @Autowired
     private MessageMapper messageMapper;
 
+    @Autowired
+    private VisitorMapper visitorMapper;
+
+    @Autowired
+    private InformMapper informMapper;
+
+    @Autowired
+    private InformServiceImpl informService;
+
     /**
      * 保存留言
      * @param messageDTO
      * @return
      */
     @Override
+    @Transactional
     public Map<String, Object> saveMessage(MessageDTO messageDTO) {
-        // 设置保存数据
+        // 1. 保存留言数据
         Message message = new Message();
+        // 设置留言类型
         message.setType(messageDTO.getType());
+        // 设置父级id
         message.setParentId(messageDTO.getParentId());
+        // 设置访客id
         message.setVisitorId(messageDTO.getVisitorId());
+        // 设置内容
         message.setContent(messageDTO.getContent());
+        // 设置留言时间
         message.setGmtCreate(System.currentTimeMillis());
         // 执行insert语句
         int isInsert = messageMapper.insertSelective(message);
         if (isInsert != 1) throw new CustomizeException(CustomizeErrorCode.ADD_MESSAGE_ERROR);
-        // 获取插入留言的id
-        Integer id = message.getId();
+
+        // 2. 添加通知
+        Inform inform = new Inform();
+        // 设置通知类型
+        inform.setType(InformType.INFORM_MESSAGE.getType());
+        // 设置通知人
+        inform.setVisitorId(messageDTO.getVisitorId());
+        // 设置留言id
+        inform.setMessageId(message.getId());
+        // 设置通知时间
+        inform.setGmtCreate(System.currentTimeMillis());
+        // 执行insert语句
+        int isInform = informMapper.insertSelective(inform);
+        if (isInform != 1) {
+            throw new CustomizeException(CustomizeErrorCode.ADD_INFORM_ERROR);
+        }
+        // 结果返回
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("message", message);
         return resultMap;
     }
-
-    @Autowired
-    private VisitorMapper visitorMapper;
 
     /**
      * 查询全部留言
      * @return
      */
     @Override
-    public List<Map<String, Object>> findAllMessage(Integer currentPage, Integer offset) {
+    @Transactional
+    public List<Map<String, Object>> findAllMessage(Integer currentPage, Integer offset, Integer informId) {
+        //修改通知状态
+        informService.updateInformState(informId);
+
         // 判断当前页是否小于1
         if (currentPage < 1) {
             throw new CustomizeException(CustomizeErrorCode.PAGE_ERROR);

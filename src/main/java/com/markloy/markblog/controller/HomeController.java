@@ -93,9 +93,10 @@ public class HomeController {
      * @return
      */
     @GetMapping("/article/{id}")
-    public ResultDTO articleDetail(@PathVariable("id") Integer id) {
+    public ResultDTO articleDetail(@PathVariable("id") Integer id,
+                                   @RequestParam(value = "informId", defaultValue = "0") Integer informId) {
 
-        Map<String, Object> map = articleService.findArticleDetail(id);
+        Map<String, Object> map = articleService.findArticleDetail(id, informId);
 
         return ResultDTO.success(map);
     }

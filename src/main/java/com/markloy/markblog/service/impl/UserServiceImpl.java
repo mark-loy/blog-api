@@ -2,6 +2,7 @@ package com.markloy.markblog.service.impl;
 
 import com.markloy.markblog.dto.GithubUserDTO;
 import com.markloy.markblog.dto.LoginDTO;
+import com.markloy.markblog.dto.UpdateAdminDTO;
 import com.markloy.markblog.dto.UserDTO;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
      * @return
      */
     @Override
+    @Transactional
     public Map<String, Object> saveGithubUser(GithubUserDTO githubUserDTO) {
         // 通过accountId查询该用户是否存在
         VisitorExample visitorExample = new VisitorExample();
@@ -143,8 +146,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public Map<String, Object> findAllVisitor() {
-        VisitorExample visitorExample = new VisitorExample();
-        List<Visitor> visitors = visitorMapper.selectByExample(visitorExample);
+        List<Visitor> visitors = visitorMapper.selectByExample(new VisitorExample());
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("visitors", visitors);
         return resultMap;
@@ -176,6 +178,87 @@ public class UserServiceImpl implements UserService {
         }
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("visitor", record);
+        return resultMap;
+    }
+
+    /**
+     * 查询所有管理员信息
+     * @return
+     */
+    @Override
+    public Map<String, Object> findAllAdmin() {
+        List<Admin> adminList = adminMapper.selectByExample(new AdminExample());
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("admins", adminList);
+        return resultMap;
+    }
+
+    /**
+     * 修改管理员信息
+     * @param updateAdminDTO 修改字段DTO
+     * @return
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> updateAdmin(UpdateAdminDTO updateAdminDTO) {
+        // 查询库中是否存在
+        Admin admin = adminMapper.selectByPrimaryKey(updateAdminDTO.getId());
+        if (admin == null) {
+            throw new CustomizeException(CustomizeErrorCode.USER_NOT_FOUND);
+        }
+        // 存在，修改信息, 设置修改字段
+        Admin record = new Admin();
+        // 设置主键
+        record.setId(updateAdminDTO.getId());
+        // 设置用户名
+        record.setUsername(updateAdminDTO.getUsername());
+        // 设置昵称
+        record.setPetName(updateAdminDTO.getPetName());
+        // 设置邮箱
+        record.setEmail(updateAdminDTO.getEmail());
+        // 设置头像
+        record.setAvatar(updateAdminDTO.getAvatar());
+        // 设置更新时间
+        record.setGmtModified(System.currentTimeMillis());
+        // 执行update
+        int isUpdate = adminMapper.updateByPrimaryKeySelective(record);
+        if (isUpdate != 1) {
+            throw new CustomizeException(CustomizeErrorCode.UPDATE_ADMIN_ERROR);
+        }
+        // 结果返回
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("admin", record);
+        return resultMap;
+    }
+
+    /**
+     * 修改管理员状态
+     * @param id 主键
+     * @param state 状态
+     * @return
+     */
+    @Override
+    @Transactional
+    public Map<String, Object> updateAdminState(Integer id, Boolean state) {
+        // 查询该管理员信息是否存在
+        Admin admin = adminMapper.selectByPrimaryKey(id);
+        if (admin == null) {
+            throw new CustomizeException(CustomizeErrorCode.USER_NOT_FOUND);
+        }
+        // 存在，修改状态
+        Admin record = new Admin();
+        // 设置主键
+        record.setId(id);
+        // 设置状态
+        record.setState(state);
+        // 执行update
+        int isUpdate = adminMapper.updateByPrimaryKeySelective(record);
+        if (isUpdate != 1) {
+            throw new CustomizeException(CustomizeErrorCode.UPDATE_ADMIN_ERROR);
+        }
+        // 结果处理
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("admin", record);
         return resultMap;
     }
 }

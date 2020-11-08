@@ -2,10 +2,12 @@ package com.markloy.markblog.service.impl;
 
 import com.markloy.markblog.dto.*;
 import com.markloy.markblog.enums.CustomizeErrorCode;
+import com.markloy.markblog.enums.InformType;
 import com.markloy.markblog.exception.CustomizeException;
 import com.markloy.markblog.mapper.*;
 import com.markloy.markblog.pojo.*;
 import com.markloy.markblog.service.ArticleService;
+import com.markloy.markblog.service.InformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private VisitorLikeMapper visitorLikeMapper;
+
+    @Autowired
+    private InformServiceImpl informService;
 
     /**
      * 获取文章列表
@@ -167,7 +172,7 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     @Transactional
-    public Map<String, Object> findArticleDetail(Integer id) {
+    public Map<String, Object> findArticleDetail(Integer id, Integer informId) {
         // 文章信息
         Article article = articleMapper.selectByPrimaryKey(id);
         if (article == null) {
@@ -178,6 +183,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (isIncrView != 1) {
             throw new CustomizeException(CustomizeErrorCode.INCR_VIEWCOUNT_ERROR);
         }
+        // 修改通知状态
+        informService.updateInformState(informId);
         // 用户信息
         Admin admin = adminMapper.selectByPrimaryKey(article.getAdminId());
         HashMap<String, Object> userMap = new HashMap<>();
@@ -397,6 +404,10 @@ public class ArticleServiceImpl implements ArticleService {
         return resultMap;
     }
 
+
+    @Autowired
+    private InformMapper informMapper;
+
     /**
      * 文章点赞
      * @param articleLikeDTO
@@ -430,6 +441,22 @@ public class ArticleServiceImpl implements ArticleService {
                 int isInsert = visitorLikeMapper.insertSelective(visitorLike);
                 if (isInsert != 1) {
                     throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
+                }
+
+                // 添加点赞通知
+                Inform inform = new Inform();
+                // 设置通知类型
+                inform.setType(InformType.INFORM_LIKE.getType());
+                // 设置通知人
+                inform.setVisitorId(articleLikeDTO.getVisitorId());
+                // 设置文章id
+                inform.setArticleId(articleLikeDTO.getArticleId());
+                // 设置通知时间
+                inform.setGmtCreate(System.currentTimeMillis());
+                // 执行insert语句
+                int isInform = informMapper.insertSelective(inform);
+                if (isInform != 1) {
+                    throw new CustomizeException(CustomizeErrorCode.ADD_INFORM_ERROR);
                 }
             } else {
                 throw new CustomizeException(CustomizeErrorCode.VISITOR_LIKE_ERROR);
