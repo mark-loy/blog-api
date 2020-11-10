@@ -1,10 +1,41 @@
-#配置数据库连接
+# 端口配置
+server:
+  port: 8888
+
+# spring配置
 spring:
+  #配置数据库连接
   datasource:
-    url: jdbc:mysql://localhost:3306/blog?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mysql://rm-bp11j3dwvjw3942g17o.mysql.rds.aliyuncs.com:3306/blog?serverTimezone=UTC&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
+    username: marker_db
+    password: shuqi19990107
+  # servlet配置
+  servlet:
+    # 上传文件大小设置
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+# mybatis配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+  #配置mapper.xml配置文件的位置
+  mapper-locations: classpath:mapper/*.xml
+  #配置别名包
+  type-aliases-package: com.markloy.markblog.pojo
+
+# OSS对象存储配置
+aliyun:
+  endpoint: https://oss-cn-beijing.aliyuncs.com
+  accessKeyId: LTAI4G1XwSwHugkm4fod6MDg
+  accessKeySecret: hHXmXP9tb4XRPzzQffqMa4tpTGUK3o
+  oss:
+    bucketName: marker-fileupload
+    filePatten: images/blog/prod/
+    expiration: 31104000000
+
 # 日志信息配置
 logging:
   level:

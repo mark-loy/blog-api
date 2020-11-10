@@ -31,9 +31,6 @@ public class CategoryServiceImpl implements CategoryService {
     public Map<String, Object> getFindAll() {
         //查询分类数据
         List<Category> categoryList = categoryMapper.selectByExample(new CategoryExample());
-        if (categoryList.size() == 0) {
-            throw new CustomizeException(CustomizeErrorCode.CATEGORY_NOT_FOUND);
-        }
         List<Map<String, Object>> cateList = new ArrayList<>();
         categoryList.forEach(category -> {
             HashMap<String, Object> map = new HashMap<>();

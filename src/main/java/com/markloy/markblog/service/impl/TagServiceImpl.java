@@ -32,9 +32,6 @@ public class TagServiceImpl implements TagService {
         //查询所有的tag标签信息
         TagExample tagExample = new TagExample();
         List<Tag> tags = tagMapper.selectByExample(tagExample);
-        if (tags.size() == 0) {
-            throw new CustomizeException(CustomizeErrorCode.TAG_NOT_FOUND);
-        }
         //遍历结果集
         List<Map<String, Object>> tagList = new ArrayList<>();
         tags.forEach(tag -> {

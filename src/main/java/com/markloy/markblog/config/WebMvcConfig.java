@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor)
-                .addPathPatterns("/back/**", "/save/message", "/home/like/article");
+                .addPathPatterns("/private/api/back/**", "/private/api/save/message", "/private/api/home/like/article");
     }
 
 }

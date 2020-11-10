@@ -32,9 +32,9 @@
             <id>prod</id>
             <properties>
                 <db.driver>com.mysql.jdbc.Driver</db.driver>
-                <db.url>jdbc:mysql://172.26.71.138:3306/blog?serverTimezone=UTC&amp;characterEncoding=utf8</db.url>
-                <db.user>root</db.user>
-                <db.password>123456</db.password>
+                <db.url>jdbc:mysql://rm-bp11j3dwvjw3942g17o.mysql.rds.aliyuncs.com:3306/blog?serverTimezone=UTC&amp;characterEncoding=utf8</db.url>
+                <db.user>marker_db</db.user>
+                <db.password>shuqi19990107</db.password>
             </properties>
         </profile>
     </profiles>

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/tag")
+@RequestMapping("/private/api/tag")
 public class TagController {
 
     @Autowired

@@ -19,7 +19,7 @@ import java.util.Map;
  * home页面数据请求
  */
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/private/api/home")
 public class HomeController {
 
     @Autowired

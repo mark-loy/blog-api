@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("//private/api")
 public class MessageController {
 
     @Autowired

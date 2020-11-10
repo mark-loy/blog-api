@@ -1,8 +1,6 @@
 package com.markloy.markblog.controller;
 
 import com.markloy.markblog.dto.*;
-import com.markloy.markblog.enums.CustomizeErrorCode;
-import com.markloy.markblog.exception.CustomizeException;
 import com.markloy.markblog.provider.OSSProvider;
 import com.markloy.markblog.service.*;
 import lombok.extern.slf4j.Slf4j;
@@ -11,21 +9,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.MultipartResolver;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
  * 博客后台管理api
  */
 @RestController
-@RequestMapping("/back")
+@RequestMapping("/private/api/back")
 @Slf4j
 public class BackManageController {
 
