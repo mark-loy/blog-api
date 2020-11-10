@@ -3,7 +3,7 @@ git pull
 mvn clean compile flyway:migrate -Pprod
 mvn clean compile -DskipTests package
 pid=$(ps aux | grep "blog" | grep -v grep | awk '{print $2}')
-if [ $pid -eq "" ]
+if [ $pid ]
 then
     echo "Begin start blog"
     nohup java -jar -Dspring.profiles.active=prod target/markblog-0.0.1-SNAPSHOT.jar >/dev/null 2>&1 &
