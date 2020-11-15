@@ -241,7 +241,7 @@ public class BackManageController {
      */
     @ResponseBody
     @PostMapping("/file/upload")
-    public ResultDTO fileUpload(HttpServletRequest request) throws IOException {
+    public ResultDTO fileUpload(HttpServletRequest request) throws Exception {
         //转化request对象为上传文件的request对象
         MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
         // 获取文件
@@ -258,7 +258,7 @@ public class BackManageController {
      * @return
      */
     @DeleteMapping("/file/delete/{file_name}")
-    public ResultDTO fileDelete(@PathVariable("file_name") String fileName) {
+    public ResultDTO fileDelete(@PathVariable("file_name") String fileName) throws Exception {
 
         ossProvider.fileDelete(fileName);
 

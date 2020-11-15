@@ -149,6 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
             HashMap<String, Object> articleMap = new HashMap<>();
             articleMap.put("id", article.getId());
             articleMap.put("title", article.getTitle());
+            articleMap.put("showImg", article.getShowImg());
             articleMap.put("context", article.getContext());
             articleMap.put("view_count", article.getViewCount());
             articleMap.put("like_count", article.getLikeCount());

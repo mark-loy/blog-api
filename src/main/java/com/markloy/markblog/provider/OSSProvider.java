@@ -3,9 +3,9 @@ package com.markloy.markblog.provider;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.SimplifiedObjectMeta;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
+import com.markloy.markblog.util.DesUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,8 +36,14 @@ public class OSSProvider {
      * @param file 文件
      * @return OSS外网路径
      */
-    public Map<String, Object> fileUpload(MultipartFile file) throws IOException {
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    public Map<String, Object> fileUpload(MultipartFile file) throws Exception {
+        // 创建解码器
+        DesUtils des = new DesUtils("markLoyBlog");
+        // 解码key、secret
+        String key = des.decrypt(accessKeyId);
+        String secret = des.decrypt(accessKeySecret);
+        //构建OSS实列
+        OSS ossClient = new OSSClientBuilder().build(endpoint, key, secret);
         //对文件名进行处理  \\代表转义
         String[] strings = Objects.requireNonNull(file.getOriginalFilename()).split("\\.");
         String suffix = strings[strings.length - 1];
@@ -69,12 +75,17 @@ public class OSSProvider {
      * @return
      * @throws IOException
      */
-    public void fileDelete(String fileName) {
+    public void fileDelete(String fileName) throws Exception {
+        // 创建解码器
+        DesUtils des = new DesUtils("markLoyBlog");
+        // 解码key、secret
+        String key = des.decrypt(accessKeyId);
+        String secret = des.decrypt(accessKeySecret);
         // 创建OSSClient实例。
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        OSS ossClient = new OSSClientBuilder().build(endpoint, key, secret);
         // 删除文件。如需删除文件夹，请将ObjectName设置为对应的文件夹名称。
         // 如果文件夹非空，则需要将文件夹下的所有object删除后才能删除该文件夹。
-        ossClient.deleteObject(bucketName, fileName);
+        ossClient.deleteObject(bucketName, filePatten + fileName);
         // 关闭OSSClient。
         ossClient.shutdown();
     }

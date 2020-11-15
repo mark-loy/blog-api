@@ -29,8 +29,8 @@ mybatis:
 # OSS对象存储配置
 aliyun:
   endpoint: https://oss-cn-beijing.aliyuncs.com
-  accessKeyId: LTAI4G1XwSwHugkm4fod6MDg
-  accessKeySecret: hHXmXP9tb4XRPzzQffqMa4tpTGUK3o
+  accessKeyId: e0d074928cc27a4c6536f3052a4d54fe893d1b2c1e5dfb11d6746d169147a80e
+  accessKeySecret: 65b52d47c2254847f3237ac1581cc018e64a318610beb9e55d25d2b603ee7067
   oss:
     bucketName: marker-fileupload
     filePatten: images/blog/dev/
