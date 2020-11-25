@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     @Transactional
-    public Map<String, Object> saveVisitorUser(VisitorLoginDTO visitorLoginDTO) {
+    public Map<String, Object> saveVisitorUser(VisitorLoginDTO visitorLoginDTO, int type) {
         // 通过accountId查询该用户是否存在
         VisitorExample visitorExample = new VisitorExample();
         visitorExample.createCriteria()
@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
             // 设置账户id
             addVisitor.setAccountId(visitorLoginDTO.getAccountId());
             // 设置登录来源
-            addVisitor.setSource(1);
+            addVisitor.setSource(type);
             // 设置访客名
             addVisitor.setVisitorName(visitorLoginDTO.getVisitorName());
             // 设置头像url

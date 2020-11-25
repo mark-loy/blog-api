@@ -11,7 +11,7 @@ public interface UserService {
 
     UserDTO userLogin(LoginDTO loginDTO);
 
-    Map<String, Object> saveVisitorUser(VisitorLoginDTO visitorLoginDTO);
+    Map<String, Object> saveVisitorUser(VisitorLoginDTO visitorLoginDTO, int type);
 
     Map<String, Object> findAllVisitor();
 

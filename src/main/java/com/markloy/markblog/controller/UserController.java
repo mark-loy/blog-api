@@ -30,7 +30,8 @@ public class UserController {
      */
     @PostMapping("save/user/github")
     public ResultDTO saveGithubUser(@Validated @RequestBody VisitorLoginDTO visitorLoginDTO) {
-        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO);
+        int type = 1;
+        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO, type);
         return ResultDTO.success(map);
     }
 
@@ -41,7 +42,8 @@ public class UserController {
      */
     @PostMapping("save/user/qq")
     public ResultDTO saveQQUser(@Validated @RequestBody VisitorLoginDTO visitorLoginDTO) {
-        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO);
+        int type = 2;
+        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO, type);
         return ResultDTO.success(map);
     }
 
