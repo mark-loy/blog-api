@@ -6,7 +6,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class GithubUserDTO {
+public class VisitorLoginDTO {
 
     @NotNull(message = "账户id不能为空")
     private Long accountId;

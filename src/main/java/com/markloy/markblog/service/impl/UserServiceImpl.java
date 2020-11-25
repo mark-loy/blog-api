@@ -1,13 +1,12 @@
 package com.markloy.markblog.service.impl;
 
-import com.markloy.markblog.dto.GithubUserDTO;
 import com.markloy.markblog.dto.LoginDTO;
 import com.markloy.markblog.dto.UpdateAdminDTO;
 import com.markloy.markblog.dto.UserDTO;
+import com.markloy.markblog.dto.VisitorLoginDTO;
 import com.markloy.markblog.enums.CustomizeErrorCode;
 import com.markloy.markblog.exception.CustomizeException;
 import com.markloy.markblog.mapper.AdminMapper;
-import com.markloy.markblog.mapper.UserMapper;
 import com.markloy.markblog.mapper.VisitorMapper;
 import com.markloy.markblog.pojo.*;
 import com.markloy.markblog.service.UserService;
@@ -15,13 +14,10 @@ import com.markloy.markblog.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,16 +66,16 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 保存GitHub登录的访客信息
-     * @param githubUserDTO
+     * @param visitorLoginDTO
      * @return
      */
     @Override
     @Transactional
-    public Map<String, Object> saveGithubUser(GithubUserDTO githubUserDTO) {
+    public Map<String, Object> saveVisitorUser(VisitorLoginDTO visitorLoginDTO) {
         // 通过accountId查询该用户是否存在
         VisitorExample visitorExample = new VisitorExample();
         visitorExample.createCriteria()
-                .andAccountIdEqualTo(githubUserDTO.getAccountId());
+                .andAccountIdEqualTo(visitorLoginDTO.getAccountId());
         List<Visitor> visitors = visitorMapper.selectByExample(visitorExample);
         // 结果集
         HashMap<String, Object> resultMap = new HashMap<>();
@@ -95,9 +91,9 @@ public class UserServiceImpl implements UserService {
             // 设置主键
             updateVisitor.setId(visitors.get(0).getId());
             // 设置访客名
-            updateVisitor.setVisitorName(githubUserDTO.getVisitorName());
+            updateVisitor.setVisitorName(visitorLoginDTO.getVisitorName());
             // 设置头像url
-            updateVisitor.setAvatarUrl(githubUserDTO.getAvatarUrl());
+            updateVisitor.setAvatarUrl(visitorLoginDTO.getAvatarUrl());
             // 设置最近登录时间
             updateVisitor.setGmtModified(System.currentTimeMillis());
             // 执行update语句
@@ -110,13 +106,13 @@ public class UserServiceImpl implements UserService {
             // 未找到该用户，新增该用户信息
             Visitor addVisitor = new Visitor();
             // 设置账户id
-            addVisitor.setAccountId(githubUserDTO.getAccountId());
+            addVisitor.setAccountId(visitorLoginDTO.getAccountId());
             // 设置登录来源
             addVisitor.setSource(1);
             // 设置访客名
-            addVisitor.setVisitorName(githubUserDTO.getVisitorName());
+            addVisitor.setVisitorName(visitorLoginDTO.getVisitorName());
             // 设置头像url
-            addVisitor.setAvatarUrl(githubUserDTO.getAvatarUrl());
+            addVisitor.setAvatarUrl(visitorLoginDTO.getAvatarUrl());
             // 设置首次登录时间
             addVisitor.setGmtCreate(System.currentTimeMillis());
             // 设置最近更新时间
@@ -131,9 +127,9 @@ public class UserServiceImpl implements UserService {
         }
         // 通过jwtUtil设置token
         HashMap<String, String> visitorMap = new HashMap<>();
-        visitorMap.put("visitor_name", githubUserDTO.getVisitorName());
-        visitorMap.put("account_id", githubUserDTO.getAccountId() + "");
-        visitorMap.put("avatar_url", githubUserDTO.getAvatarUrl());
+        visitorMap.put("visitor_name", visitorLoginDTO.getVisitorName());
+        visitorMap.put("account_id", visitorLoginDTO.getAccountId() + "");
+        visitorMap.put("avatar_url", visitorLoginDTO.getAvatarUrl());
         // 生成token
         String token = JwtUtil.createToken(visitorMap);
         resultMap.put("token", token);

@@ -1,9 +1,9 @@
 package com.markloy.markblog.controller;
 
-import com.markloy.markblog.dto.GithubUserDTO;
 import com.markloy.markblog.dto.LoginDTO;
 import com.markloy.markblog.dto.ResultDTO;
 import com.markloy.markblog.dto.UserDTO;
+import com.markloy.markblog.dto.VisitorLoginDTO;
 import com.markloy.markblog.service.UserService;
 import com.markloy.markblog.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,23 @@ public class UserController {
 
     /**
      * 保存GitHub登录的用户信息api
-     * @param githubUserDTO
+     * @param visitorLoginDTO
      * @return
      */
-    @PostMapping("save/github/user")
-    public ResultDTO saveGithubUser(@Validated @RequestBody GithubUserDTO githubUserDTO) {
-        Map<String, Object> map =  userService.saveGithubUser(githubUserDTO);
+    @PostMapping("save/user/github")
+    public ResultDTO saveGithubUser(@Validated @RequestBody VisitorLoginDTO visitorLoginDTO) {
+        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO);
+        return ResultDTO.success(map);
+    }
+
+    /**
+     * 保存QQ登录的用户信息api
+     * @param visitorLoginDTO
+     * @return
+     */
+    @PostMapping("save/user/qq")
+    public ResultDTO saveQQUser(@Validated @RequestBody VisitorLoginDTO visitorLoginDTO) {
+        Map<String, Object> map =  userService.saveVisitorUser(visitorLoginDTO);
         return ResultDTO.success(map);
     }
 
