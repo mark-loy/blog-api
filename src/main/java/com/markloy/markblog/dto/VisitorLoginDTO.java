@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class VisitorLoginDTO {
 
     @NotNull(message = "账户id不能为空")
-    private Long accountId;
+    private String accountId;
 
     @NotBlank(message = "访客名不能为空")
     private String visitorName;

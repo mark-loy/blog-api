@@ -1,7 +1,7 @@
 create table visitor
 (
     id int auto_increment comment '自增、主键',
-    account_id bigint not null comment '账户id，唯一',
+    account_id varchar(125) not null comment '账户id，唯一',
     source int not null comment '登录来源，1.github;2.qq',
     visitor_name varchar(50) not null comment '访客名称',
     avatar_url varchar(512) not null comment '头像url',
