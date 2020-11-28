@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("//private/api")
+@RequestMapping("/private/api")
 public class MessageController {
 
     @Autowired
@@ -37,14 +37,13 @@ public class MessageController {
      */
     @GetMapping("/find/message")
     public ResultDTO getMessage(@RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
-                                @RequestParam(value = "offset",defaultValue = "5") Integer offset,
-                                @RequestParam(value = "informId",defaultValue = "0") Integer informId) {
+                                @RequestParam(value = "offset",defaultValue = "5") Integer offset) {
         // 查询留言信息
-        List<Map<String, Object>> maps = messageService.findAllMessage(currentPage, offset, informId);
+        List<Map<String, Object>> maps = messageService.findAllMessage(currentPage, offset, 1);
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("messages", maps);
         // 查询留言总数
-        long total = messageService.countMessage();
+        long total = messageService.countMessage(1);
         resultMap.put("total", total);
         return ResultDTO.success(resultMap);
     }

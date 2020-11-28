@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -325,6 +328,38 @@ public class BackManageController {
         return  ResultDTO.success(map);
     }
 
+    @Autowired
+    private MessageService messageService;
 
+    /**
+     * 分页查询留言记录api
+     * @param currentPage 当前页
+     * @param offset 当页显示数
+     * @return
+     */
+    @GetMapping("/message")
+    public ResultDTO findAllMessage(@RequestParam(value = "currentPage",defaultValue = "1") Integer currentPage,
+                                    @RequestParam(value = "offset",defaultValue = "5") Integer offset) {
+
+        List<Map<String, Object>> allMessage = messageService.findAllMessage(currentPage, offset, 0);
+        long total = messageService.countMessage(0);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("messages", allMessage);
+        resultMap.put("total", total);
+        return ResultDTO.success(resultMap);
+    }
+
+    /**
+     * 修改留言状态api
+     * @param id 留言id
+     * @return
+     */
+    @PutMapping("/message/{id}/{state}")
+    public ResultDTO updateMessageState(@PathVariable("id") Integer id, @PathVariable("state") Boolean state) {
+
+        Map<String, Object> resultMap = messageService.updateMessageState(id, state);
+
+        return  ResultDTO.success(resultMap);
+    }
 
 }

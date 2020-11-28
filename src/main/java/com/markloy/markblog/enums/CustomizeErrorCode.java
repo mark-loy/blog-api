@@ -27,7 +27,8 @@ public enum CustomizeErrorCode {
     FILE_UPLOAD_ERROR(400, "文件上传失败"),
     UPDATE_ADMIN_ERROR(402, "更新管理员信息失败"),
     ADD_INFORM_ERROR(401, "添加通知信息失败"),
-    UPDATE_INFORM_STATE_ERROR(402, "更新通知状态失败");
+    UPDATE_INFORM_STATE_ERROR(402, "更新通知状态失败"),
+    UPDATE_MESSAGE_STATE_ERROR(402, "更新留言状态失败");
 
     private final int code;
     private final String message;

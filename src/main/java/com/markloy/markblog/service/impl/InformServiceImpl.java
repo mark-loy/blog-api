@@ -87,6 +87,8 @@ public class InformServiceImpl implements InformService {
                     }
                     messageMap.put("id", message.getId());
                     messageMap.put("content", message.getContent());
+                    messageMap.put("parentId", message.getParentId());
+                    messageMap.put("state", message.getState());
                 }
 
                 // 通知信息封装
