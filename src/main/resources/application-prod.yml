@@ -1,16 +1,15 @@
 # 端口配置
 server:
   port: 8888
-  ssl:
-    protocol: TLS
+#  ssl:
     #证书的路径.
-    key-store: classpath:keystore.p12
+#    key-store: classpath:keystore.p12
     #证书密码
-    key-store-password: shuqi19990107
+#    key-store-password: shuqi19990107
     #秘钥库类型
-    key-store-type: PKCS12
+#    key-store-type: PKCS12
     #证书别名
-    key-alias: blogapi
+ #   key-alias: blogapi
 
 # spring配置
 spring:
